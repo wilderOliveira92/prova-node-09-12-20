@@ -1,0 +1,30 @@
+# Use postgres/example user/password credentials
+version: "3.1"
+
+services:
+  db:
+    image: mongo:4.2
+    container_name: mongo_helpper
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_DATABASE: helpper
+
+  api:
+    image: node:latest
+    container_name: api
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app
+    command: yarn dev
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
